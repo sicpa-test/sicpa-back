@@ -1,0 +1,107 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="romario aponte" id="0000000001">
+        <createTable tableName="enterprises">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" primaryKeyName="enterprises_pkey"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)"/>
+            <column name="modified_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="romario aponte" id="0000000002">
+        <createTable tableName="departments">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" primaryKeyName="departments_pkey"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)"/>
+            <column name="modified_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+            <column name="enterprise_id" type="UUID"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="enterprise_id" baseTableName="departments"
+                                 referencedColumnNames="id" referencedTableName="enterprises"
+                                 constraintName="fk_enterprise_departments" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION"
+                                 onUpdate="NO ACTION" validate="true"></addForeignKeyConstraint>
+    </changeSet>
+    <changeSet author="romario aponte" id="0000000003">
+        <createTable tableName="employees">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" primaryKeyName="employees_pkey"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)"/>
+            <column name="modified_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="age" type="INTEGER"></column>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="surname" type="VARCHAR(255)"/>
+            <column name="position" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="romario aponte" id="0000000004">
+        <createTable tableName="departments_employees">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" primaryKeyName="departments_employees_pkey"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="created_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)"/>
+            <column name="modified_date" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="department_id" type="UUID"/>
+            <column name="employee_id" type="UUID"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="department_id" baseTableName="departments_employees"
+                                 referencedColumnNames="id" referencedTableName="departments"
+                                 constraintName="fk_department_departments_employees" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION"
+                                 onUpdate="NO ACTION" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="employee_id" baseTableName="departments_employees"
+                                 referencedColumnNames="id" referencedTableName="employees"
+                                 constraintName="fk_employee_departments_employees" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION"
+                                 onUpdate="NO ACTION" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

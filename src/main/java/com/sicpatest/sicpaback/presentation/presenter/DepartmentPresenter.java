@@ -1,0 +1,40 @@
+package com.sicpatest.sicpaback.presentation.presenter;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sicpatest.sicpaback.entity.DepartmentEmployee;
+import com.sicpatest.sicpaback.entity.Enterprise;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class DepartmentPresenter {
+    private UUID id;
+    private String createdBy;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdDate;
+    private String modifiedBy;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime modifiedDate;
+    private Boolean status;
+    private String description;
+    private String name;
+    private String phone;
+
+    private EnterprisePresenter enterprisePresenter;
+    @Builder.Default
+    private Set<DepartmentEmployeePresenter> departmentEmployeePresenters = new HashSet<>();
+}
