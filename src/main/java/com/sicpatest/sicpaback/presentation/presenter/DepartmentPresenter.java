@@ -33,6 +33,7 @@ public class DepartmentPresenter {
     private String description;
     private String name;
     private String phone;
+    private String address;
 
     private EnterprisePresenter enterprisePresenter;
     @Builder.Default

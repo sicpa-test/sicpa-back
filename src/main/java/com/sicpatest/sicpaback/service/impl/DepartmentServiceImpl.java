@@ -5,17 +5,18 @@ import com.sicpatest.sicpaback.entity.Enterprise;
 import com.sicpatest.sicpaback.presentation.presenter.DepartmentEmployeePresenter;
 import com.sicpatest.sicpaback.presentation.presenter.DepartmentPresenter;
 import com.sicpatest.sicpaback.presentation.presenter.EnterprisePresenter;
+import com.sicpatest.sicpaback.presentation.presenter.Paginator;
 import com.sicpatest.sicpaback.repository.DepartmentRepository;
 import com.sicpatest.sicpaback.repository.EnterpriseRepository;
 import com.sicpatest.sicpaback.service.DepartmentService;
-import com.sicpatest.sicpaback.service.DeportmentEmployeeService;
+import com.sicpatest.sicpaback.service.DepartmentEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +24,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Autowired
     private DepartmentRepository departmentRepository;
     @Autowired
-    private DeportmentEmployeeService deportmentEmployeeService;
+    private DepartmentEmployeeService deportmentEmployeeService;
     @Autowired
     private EnterpriseRepository enterpriseRepository;
 
@@ -56,6 +57,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .description(department.getDescription())
                 .name(department.getName())
                 .phone(department.getPhone())
+                .address(department.getAddress())
                 .enterprisePresenter(EnterprisePresenter.builder()
                         .id(department.getEnterprise().getId())
                         .address(department.getEnterprise().getAddress())
@@ -83,7 +85,23 @@ public class DepartmentServiceImpl implements DepartmentService {
         finalDepartment.setName(departmentPresenter.getName());
         finalDepartment.setPhone(departmentPresenter.getPhone());
         finalDepartment.setEnterprise(enterprise);
+        finalDepartment.setAddress(departmentPresenter.getAddress());
         Department enterpriseSaved = departmentRepository.save(finalDepartment);
         return toDepartmentPresenter(enterpriseSaved);
+    }
+
+    @Override
+    public Paginator getDepartmentsPaginated(String searchValue, Pageable pageable) {
+        Set<DepartmentPresenter> departmentPresenters = new HashSet<>();
+        Page<Department> departmentPage = departmentRepository.findByFilters(searchValue, pageable);
+        departmentPage.getContent().forEach(department -> {
+            DepartmentPresenter departmentPresenter = toDepartmentPresenter(department);
+            departmentPresenters.add(departmentPresenter);
+        });
+        Set<DepartmentPresenter> treeSet = new TreeSet(Comparator.comparing(DepartmentPresenter::getId));
+        treeSet.addAll(departmentPresenters);
+        Paginator paginator = new Paginator(departmentPage.getTotalPages(), departmentPage.getTotalElements(), treeSet);
+
+        return paginator;
     }
 }

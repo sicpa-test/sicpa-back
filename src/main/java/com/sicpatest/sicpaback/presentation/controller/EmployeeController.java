@@ -2,10 +2,12 @@ package com.sicpatest.sicpaback.presentation.controller;
 
 
 import com.sicpatest.sicpaback.presentation.presenter.EmployeePresenter;
-import com.sicpatest.sicpaback.presentation.presenter.EnterprisePresenter;
+import com.sicpatest.sicpaback.presentation.presenter.Paginator;
 import com.sicpatest.sicpaback.service.EmployeeService;
 import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,5 +31,12 @@ public class EmployeeController {
     @PostMapping("saveUpdateEmployee")
     public EmployeePresenter saveUpdateEmployee(@RequestBody EmployeePresenter employeePresenter) {
         return employeeService.saveUpdateEmployee(employeePresenter);
+    }
+    @GetMapping("/getEmployeesPaginated")
+    public Paginator getEmployeesPaginated(String searchValue, Integer page, Integer size) {
+        searchValue = searchValue.replace(' ', '%');
+        Pageable pageable = PageRequest.of(page, size);
+
+        return employeeService.getEmployeesPaginated(searchValue, pageable);
     }
 }

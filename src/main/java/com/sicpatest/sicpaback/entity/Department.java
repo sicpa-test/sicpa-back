@@ -29,6 +29,7 @@ public class Department implements Serializable {
     private String description;
     private String name;
     private String phone;
+    private String address;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Enterprise enterprise;

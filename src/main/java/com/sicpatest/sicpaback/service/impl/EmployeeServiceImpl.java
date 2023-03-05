@@ -1,19 +1,21 @@
 package com.sicpatest.sicpaback.service.impl;
 
-import com.sicpatest.sicpaback.entity.Department;
 import com.sicpatest.sicpaback.entity.Employee;
+import com.sicpatest.sicpaback.entity.Enterprise;
 import com.sicpatest.sicpaback.presentation.presenter.DepartmentEmployeePresenter;
 import com.sicpatest.sicpaback.presentation.presenter.EmployeePresenter;
+import com.sicpatest.sicpaback.presentation.presenter.EnterprisePresenter;
+import com.sicpatest.sicpaback.presentation.presenter.Paginator;
 import com.sicpatest.sicpaback.repository.EmployeeRepository;
-import com.sicpatest.sicpaback.service.DeportmentEmployeeService;
+import com.sicpatest.sicpaback.service.DepartmentEmployeeService;
 import com.sicpatest.sicpaback.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +23,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
-    private DeportmentEmployeeService deportmentEmployeeService;
+    private DepartmentEmployeeService deportmentEmployeeService;
 
     @Override
     public List<EmployeePresenter> getAllEmployees() {
@@ -78,6 +80,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee employeeSaved = employeeRepository.save(finalEmployee);
         return toEmployeePresenter(employeeSaved);
+    }
+
+    @Override
+    public Paginator getEmployeesPaginated(String searchValue, Pageable pageable) {
+        Set<EmployeePresenter> employeePresenters = new HashSet<>();
+        Page<Employee> employeePage = employeeRepository.findByFilters(searchValue, pageable);
+        employeePage.getContent().forEach(employee -> {
+            EmployeePresenter employeePresenter = toEmployeePresenter(employee);
+            employeePresenters.add(employeePresenter);
+        });
+        Set<EmployeePresenter> treeSet = new TreeSet(Comparator.comparing(EmployeePresenter::getId));
+        treeSet.addAll(employeePresenters);
+        Paginator paginator = new Paginator(employeePage.getTotalPages(), employeePage.getTotalElements(), treeSet);
+
+        return paginator;
     }
 
 }

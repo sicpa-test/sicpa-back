@@ -15,7 +15,6 @@ import java.util.UUID;
 public interface EnterpriseRepository extends CrudRepository<Enterprise, UUID> {
     List<Enterprise> findAll();
 
-
     @Query("SELECT e " +
             "FROM  Enterprise e " +
             "WHERE LOWER(name) like LOWER(CONCAT('%',:searchValue,'%')) " +
